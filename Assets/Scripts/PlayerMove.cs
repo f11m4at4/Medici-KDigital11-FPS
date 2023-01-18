@@ -9,6 +9,8 @@ using UnityEngine;
 // 필요속성 : 중력가속도, 수직속도
 // 0. 사용자가 점프버튼을 누르면 점프를 하고 싶다.
 // 필요속성 : 점프파워.
+// 0. 이단점프를 하고 싶다.
+// 필요속성 : 점프가능 횟수, 경과횟수
 public class PlayerMove : MonoBehaviour
 {
     // 필요속성 : 이동속도
@@ -20,7 +22,10 @@ public class PlayerMove : MonoBehaviour
     // 필요속성 : 점프파워.
     public float jumpPower = 5;
     // 공중에 있는지 여부
-    bool isInAir = false;
+    //bool isInAir = false;
+    // 필요속성 : 점프가능 횟수, 경과횟수
+    public int jumpMaxCount = 2;
+    int jmpCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,16 +56,25 @@ public class PlayerMove : MonoBehaviour
         {
             //수직속도를 0으로 해줘야 한다.
             yVelocity = 0;
-            isInAir = false;
+            //isInAir = false;
+            jmpCount = 0;
         }
 
         // 바닥에 있을 때
         // 0. 사용자가 점프버튼을 누르면 점프를 하고 싶다.
-        if(isInAir == false && Input.GetButtonDown("Jump"))
+        // 점프 횟수를 측정하자
+        // 0. 이단점프를 하고 싶다.
+        // 1. 최대점프횟수보다 적게 뛰었을 때만
+        // -> 만약 경과횟수가 최대횟수보다 작다면
+        // 2. 점프버튼을 눌렀으니까
+        // 3. 점프하고 싶다.
+        if (jmpCount < jumpMaxCount && Input.GetButtonDown("Jump"))
         {
-            yVelocity = jumpPower;
-            isInAir = true;
+            // 점프를 하면 횟수가 증가한다.
+            jmpCount++;
+            yVelocity = jumpPower;           
         }
+
         dir.y = yVelocity;
         // 3. 이동하고싶다.
         // P = P0 + vt
