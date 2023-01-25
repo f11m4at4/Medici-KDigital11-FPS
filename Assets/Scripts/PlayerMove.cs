@@ -51,7 +51,6 @@ public class PlayerMove : MonoBehaviour
         // 바닥에 있을 때는 
         // above, side, below
         //if(cc.isGrounded)
-        print("collisionFlags : " + cc.collisionFlags);
         if(cc.collisionFlags == CollisionFlags.Below)
         {
             //수직속도를 0으로 해줘야 한다.

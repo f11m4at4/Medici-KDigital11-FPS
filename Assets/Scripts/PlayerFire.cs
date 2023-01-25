@@ -24,20 +24,8 @@ public class PlayerFire : MonoBehaviour
     ParticleSystem psBulletEffect;
     AudioSource asBulletSound;
 
-    void Swap(ref int a, ref int b)
-    {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
-
     void Start()
     {
-        int c = 10;
-        int d = 20;
-        Swap(ref c, ref d);
-        print("c : " + c + ", d : " + d);
-
         // 유탄발사 사용할 때만 총알 만들어놓자
         if(bGrenade)
         {
@@ -78,7 +66,10 @@ public class PlayerFire : MonoBehaviour
             // 3. Ray 필요
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
             // 4. 총알발사
-            bool bHit = Physics.Raycast(ray, out hitInfo);
+            // - 자기자신은 충돌검출에서 제외시키고 싶다.
+            //int layer = LayerMask.NameToLayer("Player");
+            int layer = 1 << gameObject.layer;
+            bool bHit = Physics.Raycast(ray, out hitInfo, 500, ~layer);
 
             // 부딪혔다면
             if (bHit)
