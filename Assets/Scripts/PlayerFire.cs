@@ -27,7 +27,7 @@ public class PlayerFire : MonoBehaviour
     void Start()
     {
         // 유탄발사 사용할 때만 총알 만들어놓자
-        if(bGrenade)
+        if (bGrenade)
         {
             //총알 만들어놓자
             MakeGrenade();
@@ -74,6 +74,21 @@ public class PlayerFire : MonoBehaviour
             // 부딪혔다면
             if (bHit)
             {
+                // 부딪힌 녀석이 Enemy 라면
+                // 1. 이름으로 찾는 방법
+                // 2. tag으로 찾는 방법
+                // 3. 부딪힌 녀석한테 Enemy 컴포넌트 달라고 해보자
+                // 만약 정상적으로 Enemyu 컴포넌트를 얻어오면
+                // -> Enemy 네
+                Enemy enemy = hitInfo.transform.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    // -> 야 너 맞았어 라고 알려주고 싶다.
+                    // 1. 부딪힌녀석에서 Enemy 컴포넌트 얻어오기
+                    // 2. Enemy 컴포넌트가 필요하다.
+                    // 3. 알려주고 싶다.
+                    enemy.OnDamageProcess();
+                }
                 // -> 부딪힌 지점에 총알 파편 튀게하자
                 bulletEffect.position = hitInfo.point;
                 // effect 가 향하는 방향을 normal 방향으로 맞춰주자
