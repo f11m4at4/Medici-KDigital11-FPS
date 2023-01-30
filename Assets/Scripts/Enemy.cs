@@ -9,6 +9,8 @@ using UnityEngine.AI;
 // FSM 뼈대(목차) 만들기
 // NavMeshAgent 를 이용해서 이동하고싶다.
 // 필요속성 : NavMeshAgent 컴포넌트
+// 애니메이션을 적용하고 싶다.
+// -> 필요속성 : animator 컴포넌트
 public class Enemy : MonoBehaviour
 {
     // 필요속성 : 이동속도, Character Controller, 타겟
@@ -30,7 +32,10 @@ public class Enemy : MonoBehaviour
 
     // 필요속성 : NavMeshAgent 컴포넌트
     NavMeshAgent agent;
-    // Start is called before the first frame update
+
+    // -> 필요속성 : animator 컴포넌트
+    Animator anim;
+
     void Start()
     {
         // 1. 타겟찾기
@@ -42,6 +47,8 @@ public class Enemy : MonoBehaviour
         // 2. 필요한 컴포넌트 얻어오기
         cc = GetComponent<CharacterController>();
         agent = GetComponent<NavMeshAgent>();
+
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -80,7 +87,8 @@ public class Enemy : MonoBehaviour
         {
             currentTime = 0;
             m_State = EnemyState.Move;
-
+            // 애니메이션 상태도 Move로 전환하고 싶다.
+            anim.SetTrigger("Move");
             // 길찾기 활성화
             agent.enabled = true;
         }
@@ -120,6 +128,8 @@ public class Enemy : MonoBehaviour
             // 바로 공격할 수 있게 경과시간을 공격시간으로
             // 설정해 버리자
             currentTime = attackDelayTime;
+            anim.SetTrigger("AttackStart");
+
         }
 
     }
@@ -142,6 +152,7 @@ public class Enemy : MonoBehaviour
         {
             currentTime = 0;
             print("공격");
+            anim.SetTrigger("Attack");
             //플레이어의 체력을 -1 깍는다.
             // 1. Player 가 있어야한다.
             // 2. PlayerHealth 가 있어야한다.
