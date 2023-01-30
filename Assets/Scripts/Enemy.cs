@@ -146,6 +146,11 @@ public class Enemy : MonoBehaviour
     public float attackDelayTime = 2;
     private void Attack()
     {
+        Vector3 dir = target.position - transform.position;
+        dir.y = 0;
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), 10 * Time.deltaTime);
+
         // 일정시간에 한번씩 공격하고 싶다.
         currentTime += Time.deltaTime;
         if(currentTime > attackDelayTime)
@@ -171,6 +176,7 @@ public class Enemy : MonoBehaviour
             // 3. 상태를 이동으로 전환
             m_State = EnemyState.Move;
             agent.enabled = true;
+            anim.SetTrigger("Move");
         }
     }
 
