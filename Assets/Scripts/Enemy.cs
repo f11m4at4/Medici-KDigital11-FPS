@@ -71,6 +71,14 @@ public class Enemy : MonoBehaviour
                 //Damage();
                 break;
             case EnemyState.Die:
+                if (canDieStart == false)
+                {
+                    currentTime += Time.deltaTime;
+                    if (currentTime > 2)
+                    {
+                        canDieStart = true;
+                    }
+                }
                 //Die();
                 break;
         }
@@ -158,13 +166,7 @@ public class Enemy : MonoBehaviour
             currentTime = 0;
             print("공격");
             anim.SetTrigger("Attack");
-            //플레이어의 체력을 -1 깍는다.
-            // 1. Player 가 있어야한다.
-            // 2. PlayerHealth 가 있어야한다.
-            // hp 설정
-            // 3. 체력 -1 감소
-            // hp = hp - 1
-            PlayerHealth.Instance.SetHP(PlayerHealth.Instance.GetHP() - 1);
+            
         }
 
         // 타겟이 공격범위를 벗어나면 상태를 이동으로 전환하고 싶다. 
@@ -207,6 +209,8 @@ public class Enemy : MonoBehaviour
         {
             // Damage로 이동
             m_State = EnemyState.Damage;
+
+            anim.SetTrigger("Damage");
             // 코루틴실행
             StartCoroutine(Damage());
         }
@@ -215,6 +219,7 @@ public class Enemy : MonoBehaviour
         {
             // Die로 이동
             m_State = EnemyState.Die;
+            anim.SetTrigger("Die");
             // 충돌체 꺼버리자
             StartCoroutine(Die());
             cc.enabled = false;
@@ -234,8 +239,15 @@ public class Enemy : MonoBehaviour
     // 
     // 필요속성 : 이동속도
     public float dieSpeed = 0.5f;
+    bool canDieStart = false;
     private IEnumerator Die()
     {
+        //2초 기다렸다가 아래로 내려가게 하자
+        //yield return new WaitForSeconds(2);
+        while(canDieStart == false)
+        {
+            yield return null;
+        }
         // 아래로 등속이동하며 위치가 -2 미터 내려가면
         // -> 위치가 -2 보다 큰동안
         while (transform.position.y > -2)
