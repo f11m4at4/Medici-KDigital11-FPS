@@ -54,6 +54,12 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 인트로상태일때는 아무것도 못하도록 하고 싶다.
+        if(GameManager.Instance.IsIntro())
+        {
+            return;
+        }
+
         print("State : " + m_State);
         // 목차
         switch(m_State)

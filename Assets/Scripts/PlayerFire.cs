@@ -43,6 +43,10 @@ public class PlayerFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.IsIntro())
+        {
+            return;
+        }
         // 유탄발사 활성화 되어 있다면
         if (bGrenade)
         {

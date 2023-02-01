@@ -35,6 +35,10 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.IsIntro())
+        {
+            return;
+        }
         // 사용자의 입력에따라 앞뒤좌우로 이동하고 싶다.
         // 1. 사용자의 입력에따라
         float h = Input.GetAxis("Horizontal");
