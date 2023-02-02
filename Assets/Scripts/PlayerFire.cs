@@ -23,9 +23,13 @@ public class PlayerFire : MonoBehaviour
     public Transform bulletEffect;
     ParticleSystem psBulletEffect;
     AudioSource asBulletSound;
-
+    Animator anim;
     void Start()
     {
+        // 마우스 화면에서 사라지도록 
+        Cursor.lockState = CursorLockMode.Locked;
+
+        anim = GetComponentInChildren<Animator>();
         // 유탄발사 사용할 때만 총알 만들어놓자
         if (bGrenade)
         {
@@ -43,6 +47,7 @@ public class PlayerFire : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UseSniper();
         if (GameManager.Instance.IsIntro())
         {
             return;
@@ -59,12 +64,38 @@ public class PlayerFire : MonoBehaviour
         FireRay();
     }
 
+    public GameObject sniperUI;
+    private void UseSniper()
+    {
+        // shift 키를 누르면
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            // -> 스나이퍼모드 동작하도록 하고 싶다.
+            // 1. 카메라의 fov 를 변경하고 싶다.
+            Camera.main.fieldOfView = 20;
+            // 2. 스나이퍼 UI 보여주기
+            sniperUI.SetActive(true);
+        }
+        // 떼면
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            // -> 원래대로 돌아가고 싶다.
+            Camera.main.fieldOfView = 60;
+            // 2. 스나이퍼 UI 안보여주기
+            sniperUI.SetActive(false);
+        }
+    }
+
     // Ray 를 이용한 총알발사
     void FireRay()
     {
         // 1. 사용자가 발사버튼을 눌렀으니까 
         if (Input.GetButtonDown("Fire1"))
         {
+            // 애니메이션 처리
+            //anim.SetTrigger("Attack");
+            anim.CrossFade("Attack",0.2f, 1, 0.5f);
+
             // 2. RaycastHit 그릇필요
             RaycastHit hitInfo = new RaycastHit();
             // 3. Ray 필요

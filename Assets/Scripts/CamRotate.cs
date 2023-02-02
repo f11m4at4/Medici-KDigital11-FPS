@@ -9,12 +9,15 @@ public class CamRotate : MonoBehaviour
 {
     // 필요속성 : 회전속도
     public float rotSpeed = 200;
-    float mx;
-    float my;
+    float mx=0;
+    float my=0;
     // Start is called before the first frame update
     void Start()
     {
-        
+        // 처음 카메라의 각도를 기억해놓자.
+        // 이유는 -> 플레이중에는 이 각도부터 시작하고 싶어서
+        mx = transform.eulerAngles.y;
+        my = -transform.eulerAngles.x;
     }
 
     // Update is called once per frame

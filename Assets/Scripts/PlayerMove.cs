@@ -26,10 +26,15 @@ public class PlayerMove : MonoBehaviour
     // 필요속성 : 점프가능 횟수, 경과횟수
     public int jumpMaxCount = 2;
     int jmpCount = 0;
+
+    Animator anim;
+    public Transform bodyMesh;
     // Start is called before the first frame update
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
+        anim.speed = 2;
     }
 
     // Update is called once per frame
@@ -43,6 +48,16 @@ public class PlayerMove : MonoBehaviour
         // 1. 사용자의 입력에따라
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+
+        anim.SetFloat("Speed", v);
+        anim.SetFloat("Direction", v * v * h);
+
+        // 카메라가 회전할 때 몸체도 회전시키고 싶다.(카메라방향으로)
+        // -> BodyMesh 향하는 방향이 카메라가 향하는 방향으로 설정
+        Vector3 bodyDir = Camera.main.transform.forward;
+        bodyDir.y = 0;
+        bodyMesh.forward = bodyDir;
+
         // 2. 방향이필요
         Vector3 dir = new Vector3(h, 0, v);
         // 카메라가 향하는 방향으로 변형해야한다.
