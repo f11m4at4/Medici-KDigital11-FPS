@@ -248,9 +248,12 @@ public class Enemy : MonoBehaviour
     bool canDieStart = false;
     private IEnumerator Die()
     {
+        // 적을 잡을 때마다 현재 점수를 1씩 올리고 싶다.
+        ScoreManager.Instance.CurScore++;
+
         //2초 기다렸다가 아래로 내려가게 하자
         //yield return new WaitForSeconds(2);
-        while(canDieStart == false)
+        while (canDieStart == false)
         {
             yield return null;
         }
@@ -264,8 +267,11 @@ public class Enemy : MonoBehaviour
             //  -> 잠깐 쉬겠다.
             yield return null;
         }
+        
+
         // -> 끝나면 없애자
         Destroy(gameObject);
+
     }
 
 
