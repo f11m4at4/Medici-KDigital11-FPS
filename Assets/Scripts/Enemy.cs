@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -105,6 +104,7 @@ public class Enemy : MonoBehaviour
             anim.SetTrigger("Move");
             // 길찾기 활성화
             agent.enabled = true;
+            curPatrol = Random.Range(0, patrolPositions.Length);
         }
     }
 
@@ -113,14 +113,45 @@ public class Enemy : MonoBehaviour
     //[HideInInspector]
     [SerializeField]
     private float attackRange = 2;
+
+    // 일정거리 밖이면 패트롤하고, 그렇지 않으면 타겟쪽으로 이동
+    public float patrolDistance = 10;
+    public Transform[] patrolPositions;
+    int curPatrol;
     private void Move()
     {
         // 타겟쪽으로 이동하고 싶다.
         // 1. 방향이 필요
         Vector3 dir = target.position - transform.position;
         float distance = dir.magnitude;
-        // NavMeshAgent 를 이용 
-        agent.destination = target.position;
+
+        // 일정거리 밖이면 패트롤하고,
+        // 나와 타겟과의 거리가 패트롤거릴 벗어났다면(패트롤범위)
+        // 패트롤 가능하다면 혹은
+        // 시야범위안에 안들어왔다면
+        float cosFov = Mathf.Cos(fov * Mathf.Deg2Rad);
+        float dot = Vector3.Dot(transform.forward, dir.normalized);
+        print("dot : " + dot + ", cosFov : " + cosFov);
+        if (distance > patrolDistance || dot < cosFov)
+        {
+            // 패트롤하기
+            // 월드에 배치된 특정 위치중에 하나로 이동한다.
+            agent.destination = patrolPositions[curPatrol].position;
+            // 특정위치를 구해야한다.
+            // -> 특정위치를 언제 구해야 하나?
+            // -> 이동 상태로 전환될때
+            // -> 특정위치에 도착했을 때
+            if(Vector3.Distance(transform.position, patrolPositions[curPatrol].position) < 0.1f)
+            {
+                curPatrol = Random.Range(0, patrolPositions.Length);
+            }
+        }
+        // 그렇지 않으면 타겟쪽으로 이동
+        else
+        {
+            // NavMeshAgent 를 이용 
+            agent.destination = target.position;
+        }
         /*dir.y = 0;
         dir.Normalize();
         // 2. 이동하고 싶다.
@@ -148,12 +179,28 @@ public class Enemy : MonoBehaviour
 
     }
 
+
     // 사용자가 필요한 아이콘(기즈모) 를 그릴수 있게 해준다.
+    // 시야각을 표시해보자
+    // 필요속성 : 시야각
+    public float fov = 90;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, targetPos);
+
+        // 시야각을 그려보자
+        Vector3 dir1 = Quaternion.AngleAxis(-fov, transform.up) * transform.forward;
+        Vector3 dir2 = Quaternion.AngleAxis(fov, transform.up) * transform.forward;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + dir1 * 10);
+        Gizmos.DrawLine(transform.position, transform.position + dir2 * 10);
     }
+
 
     // 일정시간에 한번씩 공격하고 싶다.
     // 필요속성 : 공격대기시간
@@ -234,13 +281,35 @@ public class Enemy : MonoBehaviour
 
     // 필요속성 : 대기시간
     public float damageDelayTime = 2;
+    // 넉백거리
+    public float knockbackPower = 2;
+    Vector3 targetPos;
     private IEnumerator Damage()
     {
+        // 뒤로(Shoot 방향) 일정 거리만큼 밀리도록 하자
+        // 최종 위치, 밀릴거리
+        Vector3 dir = Camera.main.transform.forward;
+        dir.y = 0;
+        targetPos = transform.position + dir * knockbackPower;
+
+        // 일정시간만큼 밀리도록 하자
+        //while (currentTime < 0.2f)
+        while(Vector3.Distance(transform.position, targetPos) > 0.5f)
+        {
+            currentTime += Time.deltaTime;
+            // 계속 이동하자
+            transform.position = Vector3.Lerp(transform.position, targetPos, knockbackPower * Time.deltaTime);
+            //cc.Move(Camera.main.transform.forward * knockbackPower * Time.deltaTime);
+            yield return null;
+        }
+
         // 일정시간 기다렸다가
         yield return new WaitForSeconds(damageDelayTime);
         // 상태를 대기로 전환하고 싶다.
         m_State = EnemyState.Idle;
     }
+
+    
 
     // 
     // 필요속성 : 이동속도

@@ -53,7 +53,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &4436226541946298208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,9 +70,12 @@ MonoBehaviour:
   m_State: 0
   idleDelayTime: 2
   attackRange: 2
+  patrolDistance: 10
+  patrolPositions: []
   attackDelayTime: 2
   basicHp: 3
   damageDelayTime: 2
+  knockbackPower: 0.6
   dieSpeed: 0.5
 --- !u!195 &4436226541946298211
 NavMeshAgent:
@@ -93,7 +96,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 1
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1 &4436226542902270977
@@ -7260,7 +7263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 56bb38f6d0067fb4fa9c801955a0b23f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 56bb38f6d0067fb4fa9c801955a0b23f, type: 3}
       propertyPath: m_LocalPosition.z
