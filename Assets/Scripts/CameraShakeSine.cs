@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 랜덤방향으로 카메라를 일정시간동안 흔들고 싶다.
-public class CameraShakeRandom : MonoBehaviour
+public class CameraShakeSine : MonoBehaviour
 {
     // 필요속성 : 카메라셰이킹시간, 흔들리는 간격(시간), 얼만큼 크게 흔들릴지, 시작점, 셰이크 경과시간, 셰이크 간격 경과시간
     public float cameraShakeTime = 0.5f;
     public float cameraShakeDelayTime = 0.02f;
     public float cameraShakeDistance = 0.205f;
+    public float sinFrequency = 1f;
     Vector3 startPos;
     float curCameraShakeTime;
     float curCameraShakeDelayTime;
@@ -34,7 +35,7 @@ public class CameraShakeRandom : MonoBehaviour
         curCameraShakeDelayTime = 0;
         startPos = Camera.main.transform.localPosition;
     }
-
+    float curTime;
     // 랜덤방향으로 카메라를 일정시간동안 흔들고 싶다.
     private void RunCameraShake()
     {
@@ -54,7 +55,9 @@ public class CameraShakeRandom : MonoBehaviour
             if (curCameraShakeDelayTime > cameraShakeDelayTime)
             {
                 // 4. 카메라 이동시키고 싶다.
-                transform.localPosition = startPos + Random.insideUnitSphere * cameraShakeDistance;
+                Vector3 dir = Vector3.up;
+                dir.y = Mathf.Sin(sinFrequency * curCameraShakeDelayTime);
+                transform.localPosition = startPos + dir * cameraShakeDistance;
                 curCameraShakeDelayTime = 0;
             }
         }

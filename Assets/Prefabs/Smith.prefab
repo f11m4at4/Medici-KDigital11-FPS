@@ -72,6 +72,7 @@ MonoBehaviour:
   attackRange: 2
   patrolDistance: 10
   patrolPositions: []
+  fov: 41.87
   attackDelayTime: 2
   basicHp: 3
   damageDelayTime: 2

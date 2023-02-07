@@ -48,6 +48,20 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         anim = GetComponentInChildren<Animator>();
+
+        // 3. 패트롤 포지션 할당하기
+        GameObject[] patrolPos = GameObject.FindGameObjectsWithTag("PatrolPosition");
+
+        patrolPositions = new Transform[patrolPos.Length];
+        //for(int i=0;i< patrolPositions.Length;i++)
+        //{
+        //    patrolPositions[i] = patrolPos[i].transform;
+        //}
+        int i = 0;
+        foreach(GameObject patrol in patrolPos)
+        {
+            patrolPositions[i++] = patrol.transform;
+        }
     }
 
     // Update is called once per frame

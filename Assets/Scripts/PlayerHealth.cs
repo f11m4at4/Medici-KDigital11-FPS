@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     public Image takeDmg;
-    private int hp = 3;
+    private int hp = 300;
 
     public static PlayerHealth Instance;
 
@@ -22,7 +22,7 @@ public class PlayerHealth : MonoBehaviour
         set
         {
             // 카메라셰이크 효과 재생
-            CameraShakeManager.Instance.Play();
+            CameraShakeManager.Instance.Play(CameraShakeManager.EShakeType.Anim);
 
             // 데미지 효과 주기
             StartCoroutine(TakeDmg());

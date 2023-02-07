@@ -30,8 +30,10 @@ public class CameraShakeManager : MonoBehaviour
                 GetComponent<CameraShakeRandom>().OnStartShake();
                 break;
             case EShakeType.Sine:
+                GetComponent<CameraShakeSine>().OnStartShake();
                 break;
             case EShakeType.Anim:
+                GetComponent<CameraShakeAnim>().OnStartShake();
                 break;
         }
     }
