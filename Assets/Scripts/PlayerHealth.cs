@@ -21,8 +21,11 @@ public class PlayerHealth : MonoBehaviour
         }
         set
         {
-            StartCoroutine(TakeDmg());
+            // 카메라셰이크 효과 재생
+            CameraShakeManager.Instance.Play();
+
             // 데미지 효과 주기
+            StartCoroutine(TakeDmg());
             hp = value;
             if (hp <= 0)
             {

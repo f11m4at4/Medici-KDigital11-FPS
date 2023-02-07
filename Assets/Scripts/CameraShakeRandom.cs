@@ -30,6 +30,8 @@ public class CameraShakeRandom : MonoBehaviour
     public void OnStartShake()
     {
         isStart = true;
+        curCameraShakeTime = 0;
+        curCameraShakeDelayTime = 0;
         startPos = Camera.main.transform.localPosition;
     }
 
@@ -42,10 +44,23 @@ public class CameraShakeRandom : MonoBehaviour
         }
         // 랜덤방향으로 카메라를 일정시간동안 흔들고 싶다.
         // 0. 셰이크 시간이 흘러야 한다.
+        curCameraShakeTime += Time.deltaTime;
         // 1. 카메라 셰이크 중이니까(셰이크 경과시간이 아직 안끝났으니까)
-        // 2. 흔들릴 시간이 흘렀으니까
-        // 3. 흔들릴 시간이 됐으니까
-        // 4. 카메라 이동시키고 싶다.
-        transform.localPosition = startPos + Random.insideUnitSphere * cameraShakeDistance;
+        if (curCameraShakeTime < cameraShakeTime)
+        {
+            // 2. 흔들릴 시간이 흘렀으니까
+            curCameraShakeDelayTime += Time.deltaTime;
+            // 3. 흔들릴 시간이 됐으니까
+            if (curCameraShakeDelayTime > cameraShakeDelayTime)
+            {
+                // 4. 카메라 이동시키고 싶다.
+                transform.localPosition = startPos + Random.insideUnitSphere * cameraShakeDistance;
+                curCameraShakeDelayTime = 0;
+            }
+        }
+        else
+        {
+            isStart = false;
+        }
     }
 }
